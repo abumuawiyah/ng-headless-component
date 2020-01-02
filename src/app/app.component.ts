@@ -7,7 +7,9 @@ import {
   ElementRef,
   ɵComponentDef as ComponentDef,
   ɵDirectiveDef as DirectiveDef,
-  Type
+  Type,
+  OnInit,
+  AfterContentInit
 } from "@angular/core";
 
 function getComponentDef<T>(t: Type<T>): ComponentDef<T> {
@@ -79,11 +81,12 @@ export class AppComponent {
   container: ViewContainerRef;
   constructor(private cfr: ComponentFactoryResolver) {
     import("./app.component").then(
-      ({ AppTest1Component, AppTest2Component, HighlightDirective }) => {
+      ({ AppTest1Component, HighlightDirective, ...others }) => {
         const def1 = getComponentDef(AppTest1Component);
+        console.log("yeah", def1);
 
-        def1.directiveDefs = [getDirectiveDef(HighlightDirective)];
-        console.log(def1);
+        // def1.directiveDefs = [getDirectiveDef(HighlightDirective)];
+        // console.log(def1);
         this.container.createComponent(
           this.cfr.resolveComponentFactory(AppTest1Component)
         );
@@ -96,6 +99,15 @@ export class AppComponent {
   }
 }
 
+export function useAccordion(implName) {
+  import("./app.component").then(({ HighlightDirective, ...others }) => {
+    const myAccordionComponentDef = getComponentDef(others[implName]);
+    myAccordionComponentDef.directiveDefs = [
+      getDirectiveDef(HighlightDirective)
+    ];
+  });
+}
+
 @withTheme()
 @Component({
   selector: "app-test1",
@@ -104,7 +116,21 @@ export class AppComponent {
   `,
   styles: []
 })
-export class AppTest1Component {}
+export class AppTest1Component implements OnInit {
+  ngOnInit(): void {
+    // useAccordion(this.constructor.name);
+  }
+
+  constructor() {
+    import("./app.component").then(({ HighlightDirective, ...others }) => {
+      this.constructor.ɵcmp.directiveDefs = [
+        getDirectiveDef(HighlightDirective)
+      ];
+
+      console.log(this.constructor.ɵcmp.directiveDefs);
+    });
+  }
+}
 
 @withTheme()
 @Component({
