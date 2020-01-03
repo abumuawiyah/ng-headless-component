@@ -82,8 +82,8 @@ export class AppComponent {
   constructor(private cfr: ComponentFactoryResolver) {
     import("./app.component").then(
       ({ AppTest1Component, HighlightDirective, ...others }) => {
-        const def1 = getComponentDef(AppTest1Component);
-        console.log("yeah", def1);
+        // const def1 = getComponentDef(AppTest1Component);
+        // console.log("yeah", def1);
 
         // def1.directiveDefs = [getDirectiveDef(HighlightDirective)];
         // console.log(def1);
@@ -99,15 +99,16 @@ export class AppComponent {
   }
 }
 
-export function useAccordion(implName) {
-  import("./app.component").then(({ HighlightDirective, ...others }) => {
-    const myAccordionComponentDef = getComponentDef(others[implName]);
-    myAccordionComponentDef.directiveDefs = [
-      getDirectiveDef(HighlightDirective)
-    ];
-  });
-}
+// export function useAccordion(implName) {
+//   import("./app.component").then(({ HighlightDirective, ...others }) => {
+//     const myAccordionComponentDef = getComponentDef(others[implName]);
+//     myAccordionComponentDef.directiveDefs = [
+//       getDirectiveDef(HighlightDirective)
+//     ];
+//   });
+// }s
 
+@useAccordion()
 @withTheme()
 @Component({
   selector: "app-test1",
@@ -121,15 +122,7 @@ export class AppTest1Component implements OnInit {
     // useAccordion(this.constructor.name);
   }
 
-  constructor() {
-    import("./app.component").then(({ HighlightDirective, ...others }) => {
-      this.constructor.ɵcmp.directiveDefs = [
-        getDirectiveDef(HighlightDirective)
-      ];
-
-      console.log(this.constructor.ɵcmp.directiveDefs);
-    });
-  }
+  constructor() {}
 }
 
 @withTheme()
@@ -141,6 +134,15 @@ export class AppTest1Component implements OnInit {
   styles: []
 })
 export class AppTest2Component {}
+
+export function useAccordion() {
+  return cmpType => {
+    console.log(cmpType);
+    import("./app.component").then(({ HighlightDirective }) => {
+      cmpType.ɵcmp.directiveDefs = [getDirectiveDef(HighlightDirective)];
+    });
+  };
+}
 
 export function withTheme() {
   return cmpType => {
