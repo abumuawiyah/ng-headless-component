@@ -4,7 +4,11 @@ import {
   ViewChild,
   ViewContainerRef
 } from "@angular/core";
-import { HighlightDirective, AccordionHeaderDirective } from "./accordion";
+import {
+  HighlightDirective,
+  AccordionHeaderDirective,
+  AccordionSectionDirective
+} from "./accordion";
 import { getDirectiveDef } from "./utils";
 
 @Component({
@@ -28,7 +32,16 @@ export class AppComponent {
 @Component({
   selector: "my-accordion",
   template: `
-    <b appHighlight>test</b>
+    <article>
+      <section accordionSection>
+        <header accordionHeader [item]="{ data: {} }">
+          Header
+        </header>
+        <div>
+          Content
+        </div>
+      </section>
+    </article>
   `,
   styles: []
 })
@@ -40,6 +53,7 @@ export function useAccordion() {
   return cmpType => {
     cmpType.ɵcmp.directiveDefs = [
       getDirectiveDef(HighlightDirective),
+      getDirectiveDef(AccordionSectionDirective),
       getDirectiveDef(AccordionHeaderDirective)
     ];
   };
