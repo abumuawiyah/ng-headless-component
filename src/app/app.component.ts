@@ -10,6 +10,7 @@ import {
   AccordionSectionDirective
 } from "./accordion";
 import { getDirectiveDef } from "./utils";
+import { NgIf, NgForOf } from "@angular/common";
 
 @Component({
   selector: "app-root",
@@ -33,9 +34,9 @@ export class AppComponent {
   selector: "my-accordion",
   template: `
     <article>
-      <section accordionSection>
-        <header accordionHeader [item]="{ data: {} }">
-          Header
+      <section accordionSection *ngFor="let i of test; let idx = index">
+        <header accordionHeader [item]="{ data: i, index: idx }">
+          {{ i }}
         </header>
         <div>
           Content
@@ -46,6 +47,7 @@ export class AppComponent {
   styles: []
 })
 export class MyAccordion {
+  test = ["azizi", "yazit", "ahmad", "zawawi"];
   constructor() {}
 }
 
@@ -54,7 +56,9 @@ export function useAccordion() {
     cmpType.ɵcmp.directiveDefs = [
       getDirectiveDef(HighlightDirective),
       getDirectiveDef(AccordionSectionDirective),
-      getDirectiveDef(AccordionHeaderDirective)
+      getDirectiveDef(AccordionHeaderDirective),
+      getDirectiveDef(NgIf),
+      getDirectiveDef(NgForOf)
     ];
   };
 }
