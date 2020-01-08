@@ -5,9 +5,9 @@ import {
   ViewContainerRef
 } from "@angular/core";
 import {
-  HighlightDirective,
   AccordionHeaderDirective,
-  AccordionSectionDirective
+  AccordionSectionDirective,
+  AccordionContentDirective
 } from "./accordion";
 import { getDirectiveDef } from "./utils";
 import { NgIf, NgForOf } from "@angular/common";
@@ -34,12 +34,12 @@ export class AppComponent {
   selector: "my-accordion",
   template: `
     <article>
-      <section accordionSection *ngFor="let i of test; let idx = index">
+      <section accordionSection *ngFor="let i of items; let idx = index">
         <header accordionHeader [item]="{ data: i, index: idx }">
           {{ i }}
         </header>
-        <div>
-          Content
+        <div accordionContent [index]="idx">
+          content
         </div>
       </section>
     </article>
@@ -47,16 +47,16 @@ export class AppComponent {
   styles: []
 })
 export class MyAccordion {
-  test = ["azizi", "yazit", "ahmad", "zawawi"];
+  items = ["azizi", "yazit", "ahmad", "zawawi"];
   constructor() {}
 }
 
 export function useAccordion() {
   return cmpType => {
     cmpType.ɵcmp.directiveDefs = [
-      getDirectiveDef(HighlightDirective),
       getDirectiveDef(AccordionSectionDirective),
       getDirectiveDef(AccordionHeaderDirective),
+      getDirectiveDef(AccordionContentDirective),
       getDirectiveDef(NgIf),
       getDirectiveDef(NgForOf)
     ];

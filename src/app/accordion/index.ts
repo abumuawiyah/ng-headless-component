@@ -6,7 +6,8 @@ import {
   OnDestroy,
   AfterViewInit,
   OnInit,
-  Input
+  Input,
+  HostBinding
 } from "@angular/core";
 import { BehaviorSubject, Subject, fromEvent } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -22,8 +23,6 @@ export class AccordionSectionDirective {
       selectedItem: item,
       highlightedItem: this.state.getValue().highlightedItem
     });
-
-    console.log("state", this.state);
   }
 
   itemHover(item) {
@@ -70,21 +69,27 @@ export class AccordionHeaderDirective
   }
 }
 
+interface Item {
+  selectedItem: any;
+  highlightedItem: any;
+}
+
 @Directive({
   selector: "[accordionContent]"
 })
 export class AccordionContentDirective {
-  constructor(el: ElementRef) {
-    // inject or add specs for accordion content into el.nativeElement
-  }
-}
-
-@Directive({
-  selector: "[appHighlight]"
-})
-export class HighlightDirective {
-  constructor(el: ElementRef) {
-    console.log("azizi", el);
-    el.nativeElement.style.backgroundColor = "yellow";
+  @HostBinding("style.display")
+  display = "none";
+  @Input() index;
+  constructor(
+    el: ElementRef,
+    @Inject(forwardRef(() => AccordionSectionDirective))
+    private accordionSection: AccordionSectionDirective
+  ) {
+    this.accordionSection.state.subscribe((data: Item) => {
+      const selectedItem = data.selectedItem;
+      el.nativeElement.style.display =
+        this.index === selectedItem.index && "block";
+    });
   }
 }
