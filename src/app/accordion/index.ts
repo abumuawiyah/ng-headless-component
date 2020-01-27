@@ -16,6 +16,7 @@ import { takeUntil } from "rxjs/operators";
   selector: "[accordionSection]"
 })
 export class AccordionSectionDirective {
+  @Input() test;
   state = new BehaviorSubject({ selectedItem: {}, highlightedItem: {} });
 
   itemClick(item) {
@@ -33,6 +34,7 @@ export class AccordionSectionDirective {
   }
 
   constructor(el: ElementRef) {
+    console.log("testing", this.test);
     // inject or add specs for accordion section into el.nativeElement
   }
 }
@@ -86,6 +88,8 @@ export class AccordionContentDirective {
     @Inject(forwardRef(() => AccordionSectionDirective))
     private accordionSection: AccordionSectionDirective
   ) {
+    console.log(this);
+
     this.accordionSection.state.subscribe((data: Item) => {
       const selectedItem = data.selectedItem;
       el.nativeElement.style.display =
