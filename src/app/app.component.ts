@@ -7,7 +7,8 @@ import {
 import {
   AccordionHeaderDirective,
   AccordionSectionDirective,
-  AccordionContentDirective
+  AccordionContentDirective,
+  RangeDirective
 } from "./accordion";
 import { getDirectiveDef } from "./utils";
 import { NgIf, NgForOf } from "@angular/common";
@@ -34,12 +35,17 @@ export class AppComponent {
   selector: "my-accordion",
   template: `
     <article>
-      <section accordionSection *ngFor="let i of items; let idx = index">
-        <header accordionHeader [item]="{ data: i, index: idx }">
-          {{ i }}
-        </header>
-        <div accordionContent [index]="idx">
-          content
+      <section accordionSection>
+        <div *ngFor="let i of items; let idx = index">
+          <div *appRange="8; let num">
+            {{ num }}. random is {{ random1or0$ }}
+          </div>
+          <header accordionHeader [item]="{ data: i, index: idx }">
+            {{ i }}
+          </header>
+          <div accordionContent [index]="idx">
+            content
+          </div>
         </div>
       </section>
     </article>
@@ -57,6 +63,7 @@ export function useAccordion() {
       getDirectiveDef(AccordionSectionDirective),
       getDirectiveDef(AccordionHeaderDirective),
       getDirectiveDef(AccordionContentDirective),
+      getDirectiveDef(RangeDirective),
       getDirectiveDef(NgIf),
       getDirectiveDef(NgForOf)
     ];
