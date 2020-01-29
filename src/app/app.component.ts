@@ -35,16 +35,18 @@ export class AppComponent {
   selector: "my-accordion",
   template: `
     <article>
-      <section accordionSection>
+      <section
+        *accordionSection="{}; let si = selectedItem; let hi = highlightedItem"
+      >
         <div *ngFor="let i of items; let idx = index">
-          <div *appRange="8; let num">
-            {{ num }}. random is {{ random1or0$ }}
+          <div>
+            Haha
           </div>
           <header accordionHeader [item]="{ data: i, index: idx }">
             {{ i }}
           </header>
           <div accordionContent [index]="idx">
-            content
+            {{ si.value }}
           </div>
         </div>
       </section>

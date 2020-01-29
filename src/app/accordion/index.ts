@@ -14,11 +14,29 @@ import {
 import { BehaviorSubject, Subject, fromEvent } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
+/**
+ * This interface represents context of the directive
+ */
+interface AccordionSectionContext {
+  selectedItem: object;
+  highlightedItem: object;
+}
+
 @Directive({
   selector: "[accordionSection]"
 })
 export class AccordionSectionDirective {
   state = new BehaviorSubject({ selectedItem: {}, highlightedItem: {} });
+
+  @Input()
+  set accordionSection(value: object) {
+    this.viewRef.clear();
+
+    this.viewRef.createEmbeddedView(this.templateRef, {
+      selectedItem: this.state.getValue().selectedItem,
+      highlightedItem: this.state.getValue().highlightedItem
+    });
+  }
 
   itemClick(item) {
     this.state.next({
@@ -34,9 +52,10 @@ export class AccordionSectionDirective {
     });
   }
 
-  constructor(el: ElementRef) {
-    // inject or add specs for accordion section into el.nativeElement
-  }
+  constructor(
+    private readonly viewRef: ViewContainerRef,
+    private readonly templateRef: TemplateRef<AccordionSectionContext>
+  ) {}
 }
 
 @Directive({
@@ -125,6 +144,8 @@ export class RangeDirective {
         last: index + 1 === range.length
       })
     );
+
+    console.log(this.viewRef);
   }
 
   constructor(
