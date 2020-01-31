@@ -30,27 +30,30 @@ export class AccordionSectionDirective {
 
   @Input()
   set accordionSection(value: object) {
-    this.viewRef.clear();
-
-    this.viewRef.createEmbeddedView(this.templateRef, {
-      selectedItem: this.state.getValue().selectedItem,
-      highlightedItem: this.state.getValue().highlightedItem
+    this.state.subscribe((data: Item) => {
+      console.log(data);
+      this.viewRef.clear();
+      this.viewRef.createEmbeddedView(this.templateRef, {
+        selectedItem: data.selectedItem
+        // highlightedItem: data.highlightedItem
+      });
     });
   }
 
   itemClick(item) {
+    console.log(item);
     this.state.next({
       selectedItem: item,
       highlightedItem: this.state.getValue().highlightedItem
     });
   }
 
-  itemHover(item) {
-    this.state.next({
-      highlightedItem: item,
-      selectedItem: this.state.getValue().selectedItem
-    });
-  }
+  // itemHover(item) {
+  //   this.state.next({
+  //     highlightedItem: item,
+  //     selectedItem: this.state.getValue().selectedItem
+  //   });
+  // }
 
   constructor(
     private readonly viewRef: ViewContainerRef,

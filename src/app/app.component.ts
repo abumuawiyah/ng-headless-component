@@ -45,9 +45,7 @@ export class AppComponent {
           <header accordionHeader [item]="{ data: i, index: idx }">
             {{ i }}
           </header>
-          <div accordionContent [index]="idx">
-            {{ si.value }}
-          </div>
+          <div accordionContent [index]="idx">hshshsh {{ si.data }}</div>
         </div>
       </section>
     </article>
