@@ -25,19 +25,21 @@ interface AccordionSectionContext {
 @Directive({
   selector: "[accordionSection]"
 })
-export class AccordionSectionDirective {
-  state = new BehaviorSubject({ selectedItem: {}, highlightedItem: {} });
+export class AccordionSectionDirective implements OnDestroy {
+  private destroy = new Subject<void>();
+  state = new BehaviorSubject({
+    selectedItem: {},
+    highlightedItem: {}
+  });
+  private context = {
+    selectedItem: {},
+    highlightedItem: {}
+  };
 
   @Input()
   set accordionSection(value: object) {
-    this.state.subscribe((data: Item) => {
-      console.log(data);
-      this.viewRef.clear();
-      this.viewRef.createEmbeddedView(this.templateRef, {
-        selectedItem: data.selectedItem
-        // highlightedItem: data.highlightedItem
-      });
-    });
+    this.viewRef.clear();
+    this.viewRef.createEmbeddedView(this.templateRef, this.context);
   }
 
   itemClick(item) {
@@ -48,17 +50,26 @@ export class AccordionSectionDirective {
     });
   }
 
-  // itemHover(item) {
-  //   this.state.next({
-  //     highlightedItem: item,
-  //     selectedItem: this.state.getValue().selectedItem
-  //   });
-  // }
+  itemHover(item) {
+    this.state.next({
+      highlightedItem: item,
+      selectedItem: this.state.getValue().selectedItem
+    });
+  }
 
   constructor(
     private readonly viewRef: ViewContainerRef,
     private readonly templateRef: TemplateRef<AccordionSectionContext>
-  ) {}
+  ) {
+    this.state.subscribe(context => {
+      this.context.selectedItem = context.selectedItem;
+      this.context.highlightedItem = context.highlightedItem;
+    });
+  }
+
+  ngOnDestroy() {
+    this.state.unsubscribe();
+  }
 }
 
 @Directive({
@@ -101,22 +112,7 @@ interface Item {
 @Directive({
   selector: "[accordionContent]"
 })
-export class AccordionContentDirective {
-  @HostBinding("style.display")
-  display = "none";
-  @Input() index;
-  constructor(
-    el: ElementRef,
-    @Inject(forwardRef(() => AccordionSectionDirective))
-    private accordionSection: AccordionSectionDirective
-  ) {
-    this.accordionSection.state.subscribe((data: Item) => {
-      const selectedItem = data.selectedItem;
-      el.nativeElement.style.display =
-        this.index === selectedItem.index && "block";
-    });
-  }
-}
+export class AccordionContentDirective {}
 
 /**
  * This interface represents context of the directive

@@ -7,8 +7,7 @@ import {
 import {
   AccordionHeaderDirective,
   AccordionSectionDirective,
-  AccordionContentDirective,
-  RangeDirective
+  AccordionContentDirective
 } from "./accordion";
 import { getDirectiveDef } from "./utils";
 import { NgIf, NgForOf } from "@angular/common";
@@ -30,22 +29,25 @@ export class AppComponent {
   }
 }
 
-@useAccordion()
+@asAccordion()
 @Component({
   selector: "my-accordion",
   template: `
     <article>
       <section
-        *accordionSection="{}; let si = selectedItem; let hi = highlightedItem"
+        *accordionSection="
+          items;
+          let si = selectedItem;
+          let hi = highlightedItem
+        "
       >
         <div *ngFor="let i of items; let idx = index">
-          <div>
-            Haha
-          </div>
           <header accordionHeader [item]="{ data: i, index: idx }">
             {{ i }}
           </header>
-          <div accordionContent [index]="idx">hshshsh {{ si.data }}</div>
+          <div accordionContent *ngIf="si.index === idx">
+            content {{ si.data }}
+          </div>
         </div>
       </section>
     </article>
@@ -57,13 +59,12 @@ export class MyAccordion {
   constructor() {}
 }
 
-export function useAccordion() {
+export function asAccordion() {
   return cmpType => {
     cmpType.ɵcmp.directiveDefs = [
       getDirectiveDef(AccordionSectionDirective),
       getDirectiveDef(AccordionHeaderDirective),
       getDirectiveDef(AccordionContentDirective),
-      getDirectiveDef(RangeDirective),
       getDirectiveDef(NgIf),
       getDirectiveDef(NgForOf)
     ];
